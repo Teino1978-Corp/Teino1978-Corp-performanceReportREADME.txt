@@ -15,5 +15,5 @@
 # Copyright (C) 2013 The R Trader
 #
 # For more information please visit my blog at www.thertrader.com
-# or drop me a line at TheRTrader at gmail
+# or you can reach me at TheRTrader at gmail
 ###############################################################################
