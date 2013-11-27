@@ -16,7 +16,7 @@
 <<fooa,echo=FALSE,message=FALSE,warning=FALSE,fig.align='center',fig.width=7.5,fig.height=5.5,results="asis">>= 
 source("D:\\Documents\\R\\code\\performanceReportWithKnitr.R")
 
-performanceReport(inputPath="D:\\Documents\\daily\\qgm\\files\\",
+performanceReport(inputPath="your_path",
                   inputFile="debaUS.csv",
                   keepColumns=c("date","optimAlloc..."))
 
