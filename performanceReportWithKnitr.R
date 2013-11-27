@@ -1,7 +1,7 @@
 #######################################################
 # R functions for Knitr performance report  
 #
-# thertrader@gmail.com - Oct 2013
+# thertrader@gmail.com - Nov 2013
 #######################################################
 
 library(knitr)
