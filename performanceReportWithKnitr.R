@@ -14,7 +14,6 @@ performanceReport  <- function(inputPath=inputPath,
                                keepColumns=keepColumns){
   
   data <- read.csv(paste(inputPath,inputFile,sep=""),sep=",")
-  # head(data)
   keepColumns <- keepColumns
   dataDaily <- data[,keepColumns]
   colnames(dataDaily) <- c("date","rtn")
@@ -31,7 +30,8 @@ performanceReport  <- function(inputPath=inputPath,
   names(monthlyRtn) <- months
   
   startYtd <- match(as.character(currentYear),substring(months,1,4))
-  colorVector <- ifelse(monthlyRtn[startYtd:length(monthlyRtn)] > 0, 1, 2)
+  colorVectorMonth <- ifelse(monthlyRtn[startYtd:length(monthlyRtn)] > 0, 1, 2)
+  colorVectorYear <- ifelse(yearlyRtn > 0, 1, 2)
   
   myxts <- xts(monthlyRtn/100,order.by=seq(as.Date("2000-01-30"), length=length(months), by="month")-2)
   colnames(myxts) <- "YTD"
@@ -78,7 +78,7 @@ performanceReport  <- function(inputPath=inputPath,
   
   bpYear <- barplot(yearlyRtn,
                     border = NA,
-                    col=1,
+                    col=colorVectorYear,
                     ylim=range(0,ceiling(max(yearlyRtn))+5),
                     main="Yearly Return - Since Inception (%)")
   text(bpYear,
@@ -87,7 +87,7 @@ performanceReport  <- function(inputPath=inputPath,
        pos=3) 
   
   bpMonth <- barplot(monthlyRtn[startYtd:length(monthlyRtn)],
-                     col=colorVector,
+                     col=colorVectorMonth,
                      border = NA,
                      ylim=range(floor(min(monthlyRtn[startYtd:length(monthlyRtn)]))-1,ceiling(max(monthlyRtn[startYtd:length(monthlyRtn)]))+1), 
                      main="Monthly Return - YTD (%)")
