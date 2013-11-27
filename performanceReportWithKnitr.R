@@ -14,14 +14,14 @@ performanceReport  <- function(inputPath=inputPath,
                                keepColumns=keepColumns){
   
   data <- read.csv(paste(inputPath,inputFile,sep=""),sep=",")
-  
+  # head(data)
   keepColumns <- keepColumns
   dataDaily <- data[,keepColumns]
   colnames(dataDaily) <- c("date","rtn")
-  days <- as.Date(dataDaily[,"date"],"%m/%d/%Y")
+  days <- as.Date(dataDaily[,"date"],"%m/%d/%Y") ##
   years <- as.numeric(sort(unique(substring(days,1,4))))
   months <- sort(unique(substring(days,1,7)))
-  dailyRtn <- as.numeric(substring(dataDaily[,"rtn"],1,nchar(as.character(dataDaily[,"rtn"]))-1))
+  dailyRtn <- as.numeric(substring(dataDaily[,"rtn"],1,nchar(as.character(dataDaily[,"rtn"]))-1)) ##
   monthlyRtn <- aggregate(dailyRtn,by=list(substring(days,1,7)),sum)[,2]
   yearlyRtn <- aggregate(dailyRtn,by=list(substring(days,1,4)),sum)[,2]
   dailyDD <- as.vector(Drawdowns(dailyRtn/100))
@@ -35,7 +35,9 @@ performanceReport  <- function(inputPath=inputPath,
   
   myxts <- xts(monthlyRtn/100,order.by=seq(as.Date("2000-01-30"), length=length(months), by="month")-2)
   colnames(myxts) <- "YTD"
-  xtablePerfMonthly <- xtable(table.CalendarReturns(myxts,geometric=FALSE),caption="Monthly Percentage Return (gross of fees)")
+  xtablePerfMonthly <- xtable(table.CalendarReturns(myxts,geometric=FALSE),
+                              caption="Monthly Percentage Return (gross of fees)",
+                              digits=1)
   
   print(xtablePerfMonthly,
         caption.placement = "top",
@@ -54,7 +56,7 @@ performanceReport  <- function(inputPath=inputPath,
   plot(days[match(as.character(currentYear),substring(days,1,4)):length(days)],
        cumsum(dailyRtn[match(as.character(currentYear),substring(days,1,4)):length(days)]),
        type="l",
-       main="Equity Curve - Year to Date (%)",
+       main="Equity Curve - YTD (%)",
        xlab="",
        ylab="")
   grid(col="dark grey")
@@ -63,7 +65,7 @@ performanceReport  <- function(inputPath=inputPath,
        type="l",
        xlab="",
        ylab="",
-       main="maximum DrawDown (%)")
+       main="maximum DrawDown - Since Inception (%)")
   grid(col="dark grey")
   
   plot(days[match(as.character(currentYear),substring(days,1,4)):length(days)],
@@ -71,27 +73,27 @@ performanceReport  <- function(inputPath=inputPath,
        type="l",
        xlab="",
        ylab="",
-       main="maximum DrawDown (%)")
+       main="maximum DrawDown - YTD (%)")
   grid(col="dark grey")
   
   bpYear <- barplot(yearlyRtn,
                     border = NA,
                     col=1,
                     ylim=range(0,ceiling(max(yearlyRtn))+5),
-                    main="Yearly Return (%)")
+                    main="Yearly Return - Since Inception (%)")
   text(bpYear,
        yearlyRtn,
-       labels=as.character(yearlyRtn),
+       labels=as.character(round(yearlyRtn,2)),
        pos=3) 
   
   bpMonth <- barplot(monthlyRtn[startYtd:length(monthlyRtn)],
                      col=colorVector,
                      border = NA,
                      ylim=range(floor(min(monthlyRtn[startYtd:length(monthlyRtn)]))-1,ceiling(max(monthlyRtn[startYtd:length(monthlyRtn)]))+1), 
-                     main="Monthly Return YTD (%)")
+                     main="Monthly Return - YTD (%)")
   text(bpMonth,
        monthlyRtn[startYtd:length(monthlyRtn)],
-       labels=as.character(monthlyRtn[startYtd:length(monthlyRtn)]),
+       labels=as.character(round(monthlyRtn[startYtd:length(monthlyRtn)],2)),
        pos=3) 
   
   nbDays <- length(days)
@@ -131,7 +133,9 @@ performanceReport  <- function(inputPath=inputPath,
   tradingStatistics <- cbind(captionColumn1,valueColumn1,captionColumn2,valueColumn2,captionColumn3,valueColumn3,captionColumn4,valueColumn4)
   colnames(tradingStatistics) <- c("Performance","(%)","Draw Down","(%)","Monthly","(%)","Daily","(%)")
   
-  xtableResult <- xtable(tradingStatistics,caption="Trading Statistics")
+  xtableResult <- xtable(tradingStatistics,
+                         caption="Trading Statistics",
+                         digits=2)
   
   print(xtableResult,
         caption.placement = "top",
@@ -139,10 +143,6 @@ performanceReport  <- function(inputPath=inputPath,
         size="\\scriptsize")  
 }
 
-
-
-
-  
 
 
 
